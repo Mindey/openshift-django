@@ -1,11 +1,17 @@
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import sys
 import socket
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = os.path.dirname(BASE_DIR)
 
 # openshift is our PAAS for now.
 ON_PAAS = 'OPENSHIFT_REPO_DIR' in os.environ
+
+# this is because we are using /src/ as main directory
+if ON_PAAS:
+    sys.path.append(os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'src'))
 
 if ON_PAAS:
     SECRET_KEY = os.environ['OPENSHIFT_SECRET_TOKEN']
@@ -37,6 +43,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	'apps.core',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -48,7 +55,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'mysite.urls'
+ROOT_URLCONF = 'urls'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
@@ -87,7 +94,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+            'NAME': os.path.join(ROOT_DIR, 'db.sqlite3'),
         }
     }
 
@@ -107,7 +114,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'wsgi','static')
+STATIC_ROOT = os.path.join(ROOT_DIR, 'wsgi','static')
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',

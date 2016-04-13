@@ -1,5 +1,8 @@
 Django on OpenShift v2
 =
+
+This is a fork from [jfmatth](https://github.com/jfmatth)'s [](https://github.com/jfmatth/openshift-django) making structure more organized, approximating [aliev](https://github.com/aliev)'s [django-skeleton](https://github.com/aliev/django-skeleton), but adapted for deployment on OpenShift. What follows is original introduction by [jfmatth] with some modifications.
+
 This git repository helps you get up and running quickly with django v1.7+ and Openshift.
 ###Features
 * Ready to use for local development
@@ -14,40 +17,63 @@ This git repository helps you get up and running quickly with django v1.7+ and O
 ###How to use this repository
 - Create an account at https://www.openshift.com
 - Install the RHC client tools if you have not already done so.
+
 ```
 sudo gem install rhc
 rhc setup
 ```
-- Create a Python 2.7 application
+
+- Create Python 2.7 application, optionally with Jenkins or haproxy
+
 ```
-rhc app create django python-2.7
-```
-- Add the database cartridge (choose one)
-```
-rhc add-cartridge postgresql-9.2 --app django
+rhc app create APP_NAME python-2.7
 
 OR
 
-rhc add-cartridge mysql-5.5 --app django 
+rhc app create jenkins jenkins-1
+rhc app create APP_NAME python-2.7 --enable-jenkins
+
+OR
+
+rhc app create APP_NAME python-2.7 -s
 ```
+
+- Add the database cartridge (choose one)
+
+```
+rhc add-cartridge postgresql-9.2 --app APP_NAME
+
+OR
+
+rhc add-cartridge mysql-5.5 --app APP_NAME 
+```
+
 - Add this upstream repo
+
 ```
-cd django
-git remote add upstream -m master https://github.com/jfmatth/openshift-django.git
+cd APP_NAME
+git remote add upstream -m master https://github.com/Mindey/openshift-django.git
 git pull -s recursive -X theirs upstream master
 ```
+
 - set the WSGI application to django's built in WSGI application (stored in the wsgi folder).
+
 ```
-rhc env set OPENSHIFT_PYTHON_WSGI_APPLICATION=wsgi/wsgi.py --app django
+rhc env set OPENSHIFT_PYTHON_WSGI_APPLICATION=src/wsgi.py --app APP_NAME
 ```
+
 - Push the repo upstream
+
 ```
 git push
 ```
+
 - SSH into the application to create a django superuser.
+
 ```
-python app-root/repo/manage.py createsuperuser
+python app-root/repo/src/manage.py createsuperuser
 ```
+
 - Now use your browser to connect to the Admin site.
 
 ### Static files
@@ -69,6 +95,7 @@ This repository was designed to allow you to quickly develop and deploy a websit
 - pip (should be installed with virtualenv)
 
 Once you have those installed, install the requirements for this repository:
+
 ```
 pip install -r requirements.txt
 ```
@@ -80,8 +107,8 @@ Once you have django installed, you can continue the tutorial from here https://
 ### Configuration details
 When a git push is done, the .openshift/action_hooks/deploy is executed.  This script does two things:
 
-1.  Runs python manage.py migrate to update any changes to the Schema
-2.  Runs python manage.py collectstatic to move all necessary static files into /wsgi/static
+1.  Runs python src/manage.py migrate to update any changes to the Schema
+2.  Runs python src/manage.py collectstatic to move all necessary static files into /wsgi/static
 
 #### Debugging mode and Openshift
 By default, debug mode is off when pushed to Openshift.  However, if you'd like to turn on debugging (settings.DEBUG) while running on Openshift, you can set the environment variable DEBUG to True and then stop and start your application, and debugging will be turned on.

@@ -1,5 +1,14 @@
 db.sqlite3
-*.pyc
 .project
 .pydevproject
 vpython27
+
+# Ignore folders
+.env
+
+# Ignore files
+*.py[co]
+*.db
+*.log
+.DS_Store
+._*
