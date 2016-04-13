@@ -133,5 +133,3 @@ This will redirect **ALL** HTTP traffic to the site to HTTPS.
 ### Notes on Python 3 compatibility
 This has not been tested thoroughly with Python 3, and currently there is a bug with Python 3.3 on Openshift.
 
-### Please Star if you like this repository.
-I don't publish many repositories, but if you like this project, please star it, thanks.
