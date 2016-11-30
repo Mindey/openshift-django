@@ -68,6 +68,13 @@ rhc env set OPENSHIFT_PYTHON_WSGI_APPLICATION=src/wsgi.py --app APP_NAME
 git push
 ```
 
+- (or might later need to)
+
+```
+git remote set-url origin ssh://YOUR_@APP_NAME-YOUR_SHORTNAME.rhcloud.com/~/git/app_name.git/
+git pull
+```
+
 - SSH into the application to create a django superuser.
 
 ```
