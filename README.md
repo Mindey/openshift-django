@@ -52,8 +52,8 @@ rhc add-cartridge mysql-5.5 --app APP_NAME
 
 ```
 cd APP_NAME
-git remote add upstream -m master https://github.com/Mindey/openshift-django.git
-git pull -s recursive -X theirs upstream master
+git remote add upstream -m master https://github.com/mindey/openshift-django.git
+git pull --allow-unrelated-histories -s recursive -X theirs upstream master
 ```
 
 - set the WSGI application to django's built in WSGI application (stored in the wsgi folder).
@@ -71,6 +71,7 @@ git push
 - SSH into the application to create a django superuser.
 
 ```
+rhc ssh APP_NAME
 python app-root/repo/src/manage.py createsuperuser
 ```
 
